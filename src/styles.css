@@ -81,6 +81,7 @@ input, select { width: 100%; border: 1px solid var(--border); background: rgba(2
 .chart-panel .charts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .chart-card.wide { grid-column: 1 / -1; }
 .chart-wrapper { height: 280px; }
+.chart-loading { margin: 0; min-height: 280px; display: grid; place-items: center; color: var(--muted); }
 .table-wrapper { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 14px 12px; border-bottom: 1px solid var(--border); text-align: left; }

@@ -1,14 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { api } from "./lib/api.js";
 import { ExpenseForm } from "./components/ExpenseForm.jsx";
 import { ExpenseTable } from "./components/ExpenseTable.jsx";
 import { FilterBar } from "./components/FilterBar.jsx";
 import { SummaryCards } from "./components/SummaryCards.jsx";
-import { ChartsPanel } from "./components/ChartsPanel.jsx";
 import { BudgetPanel } from "./components/BudgetPanel.jsx";
 import { Header } from "./components/Header.jsx";
 import { AuthPanel } from "./components/AuthPanel.jsx";
+
+const ChartsPanel = lazy(() =>
+  import("./components/ChartsPanel.jsx").then((module) => ({
+    default: module.ChartsPanel
+  }))
+);
 
 const initialFilters = {
   category: "",
@@ -333,7 +338,9 @@ export default function App() {
           </section>
 
           <section className="panel chart-panel full-width">
-            <ChartsPanel categoryData={categoryData} monthlyData={monthlyData} dailyData={dailyData} />
+            <Suspense fallback={<p className="chart-loading">Loading charts...</p>}>
+              <ChartsPanel categoryData={categoryData} monthlyData={monthlyData} dailyData={dailyData} />
+            </Suspense>
           </section>
 
           <section className="panel full-width">
