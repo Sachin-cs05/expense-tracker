@@ -1,4 +1,4 @@
-export function FilterBar({ filters, categories, onChange }) {
+export function FilterBar({ filters, categories, naturalQuery, onChange, onNaturalSearch }) {
   function updateField(event) {
     const { name, value } = event.target;
     onChange((current) => ({
@@ -15,6 +15,7 @@ export function FilterBar({ filters, categories, onChange }) {
       endDate: "",
       search: ""
     });
+    onNaturalSearch("");
   }
 
   return (
@@ -27,8 +28,13 @@ export function FilterBar({ filters, categories, onChange }) {
       </div>
       <div className="filter-grid">
         <label>
-          Search
-          <input name="search" type="search" placeholder="Search description" value={filters.search} onChange={updateField} />
+          Smart Search
+          <input
+            type="search"
+            placeholder="e.g. food last month"
+            value={naturalQuery}
+            onChange={(event) => onNaturalSearch(event.target.value)}
+          />
         </label>
         <label>
           Category

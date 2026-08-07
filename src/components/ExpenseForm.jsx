@@ -1,4 +1,4 @@
-export function ExpenseForm({ categories, formValues, editingExpenseId, onChange, onReset, onSubmit }) {
+export function ExpenseForm({ categories, formValues, editingExpenseId, categorySuggestion, onChange, onReset, onSubmit }) {
   function handleChange(event) {
     const { name, value } = event.target;
     onChange((current) => ({
@@ -45,6 +45,7 @@ export function ExpenseForm({ categories, formValues, editingExpenseId, onChange
             onChange={handleChange}
             required
           />
+          {categorySuggestion ? <span className="field-hint">Smart category: {categorySuggestion}</span> : null}
         </label>
         <div className="form-actions full-span">
           <button className="primary-button" type="submit">

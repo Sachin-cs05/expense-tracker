@@ -2,12 +2,16 @@ import express from "express";
 import { ZodError } from "zod";
 import { expenseCategories } from "../constants.js";
 import { getDailyProgression, getSummary, getMonthlyTrend, getCategoryTotals } from "../services/analyticsService.js";
-import { addExpense, editExpense, getExpenses, removeExpense } from "../services/expenseService.js";
+import { addExpense, editExpense, getExpenses, removeExpense, suggestExpenseCategory } from "../services/expenseService.js";
 
 export const expenseRouter = express.Router();
 
 expenseRouter.get("/categories", (_request, response) => {
   response.json(expenseCategories);
+});
+
+expenseRouter.get("/suggest-category", (request, response) => {
+  response.json({ category: suggestExpenseCategory(String(request.query.description || "")) });
 });
 
 expenseRouter.get("/", async (request, response) => {

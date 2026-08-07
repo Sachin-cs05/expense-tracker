@@ -8,6 +8,8 @@ import { SummaryCards } from "./components/SummaryCards.jsx";
 import { BudgetPanel } from "./components/BudgetPanel.jsx";
 import { Header } from "./components/Header.jsx";
 import { AuthPanel } from "./components/AuthPanel.jsx";
+import { SmartInsightsPanel } from "./components/SmartInsightsPanel.jsx";
+import { SavingsGoalsPanel } from "./components/SavingsGoalsPanel.jsx";
 
 const ChartsPanel = lazy(() =>
   import("./components/ChartsPanel.jsx").then((module) => ({
@@ -35,6 +37,8 @@ const emptyAuthForm = {
   password: ""
 };
 
+const emptyGoalForm = { name: "", targetAmount: "", savedAmount: "", targetDate: "" };
+
 export default function App() {
   const [expenses, setExpenses] = useState([]);
   const [summary, setSummary] = useState(null);
@@ -57,6 +61,10 @@ export default function App() {
   const [authForm, setAuthForm] = useState(emptyAuthForm);
   const [authUser, setAuthUser] = useState(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [categorySuggestion, setCategorySuggestion] = useState("");
+  const [naturalQuery, setNaturalQuery] = useState("");
+  const [savingsGoals, setSavingsGoals] = useState([]);
+  const [goalForm, setGoalForm] = useState(emptyGoalForm);
 
   const queryString = useMemo(() => {
     const params = new URLSearchParams();
@@ -128,6 +136,25 @@ export default function App() {
     refreshDashboard();
   }, [authUser, queryString]);
 
+  useEffect(() => {
+    if (!authUser || editingExpenseId || formValues.description.trim().length < 2) {
+      setCategorySuggestion("");
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        const { category } = await api.suggestCategory(formValues.description);
+        setCategorySuggestion(category || "");
+        if (category) setFormValues((current) => ({ ...current, category }));
+      } catch {
+        setCategorySuggestion("");
+      }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [authUser, editingExpenseId, formValues.description]);
+
   function clearSession(message = "") {
     api.clearToken();
     localStorage.removeItem("expense-token");
@@ -139,6 +166,10 @@ export default function App() {
     setCategoryData([]);
     setCategories([]);
     setBudgetStatus(null);
+    setSavingsGoals([]);
+    setGoalForm(emptyGoalForm);
+    setNaturalQuery("");
+    setCategorySuggestion("");
     setErrorMessage("");
     setAuthMessage(message);
     setEditingExpenseId(null);
@@ -157,14 +188,15 @@ export default function App() {
 
   async function refreshDashboard() {
     try {
-      const [expensesData, summaryData, dailyChartData, monthlyChartData, categoryChartData, budgetData] =
+      const [expensesData, summaryData, dailyChartData, monthlyChartData, categoryChartData, budgetData, goalsData] =
         await Promise.all([
           api.getExpenses(queryString),
           api.getSummary(queryString),
           api.getDailyData(queryString),
           api.getMonthlyData(),
           api.getCategoryData(queryString),
-          api.getBudget(filters.month || format(new Date(), "yyyy-MM"))
+          api.getBudget(filters.month || format(new Date(), "yyyy-MM")),
+          api.getSavingsGoals()
         ]);
 
       setExpenses(expensesData);
@@ -173,6 +205,7 @@ export default function App() {
       setMonthlyData(monthlyChartData);
       setCategoryData(categoryChartData);
       setBudgetStatus(budgetData.status);
+      setSavingsGoals(goalsData);
       setBudgetForm((current) => ({
         ...current,
         month: filters.month || current.month,
@@ -260,6 +293,37 @@ export default function App() {
     }
   }
 
+  async function handleGoalSubmit(event) {
+    event.preventDefault();
+    try {
+      await api.createSavingsGoal(goalForm);
+      setGoalForm(emptyGoalForm);
+      refreshDashboard();
+    } catch (error) {
+      handleRequestError(error);
+    }
+  }
+
+  async function handleGoalDelete(id) {
+    try {
+      await api.deleteSavingsGoal(id);
+      refreshDashboard();
+    } catch (error) {
+      handleRequestError(error);
+    }
+  }
+
+  function handleNaturalSearch(value) {
+    setNaturalQuery(value);
+    const query = value.toLowerCase();
+    const category = categories.find((item) => query.includes(item.toLowerCase())) || "";
+    const now = new Date();
+    const month = query.includes("last month")
+      ? format(new Date(now.getFullYear(), now.getMonth() - 1, 1), "yyyy-MM")
+      : query.includes("this month") ? format(now, "yyyy-MM") : "";
+    setFilters((current) => ({ ...current, category, month, search: category || month ? "" : value }));
+  }
+
   async function handleExport(type) {
     try {
       await api.downloadReport(type, queryString);
@@ -318,6 +382,7 @@ export default function App() {
               categories={categories}
               formValues={formValues}
               editingExpenseId={editingExpenseId}
+              categorySuggestion={categorySuggestion}
               onChange={setFormValues}
               onReset={resetForm}
               onSubmit={handleSubmit}
@@ -333,8 +398,16 @@ export default function App() {
             />
           </section>
 
+          <section className="panel">
+            <SmartInsightsPanel summary={summary} />
+          </section>
+
+          <section className="panel">
+            <SavingsGoalsPanel goals={savingsGoals} formValues={goalForm} onFormChange={setGoalForm} onSubmit={handleGoalSubmit} onDelete={handleGoalDelete} />
+          </section>
+
           <section className="panel full-width">
-            <FilterBar filters={filters} categories={categories} onChange={setFilters} />
+            <FilterBar filters={filters} categories={categories} naturalQuery={naturalQuery} onChange={setFilters} onNaturalSearch={handleNaturalSearch} />
           </section>
 
           <section className="panel chart-panel full-width">

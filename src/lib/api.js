@@ -50,6 +50,7 @@ export const api = {
     }),
   getMe: () => request("/api/auth/me"),
   getCategories: () => request("/api/expenses/categories"),
+  suggestCategory: (description) => request(`/api/expenses/suggest-category?description=${encodeURIComponent(description)}`),
   getExpenses: (query) => request(`/api/expenses${query ? `?${query}` : ""}`),
   getSummary: (query) => request(`/api/expenses/analytics/summary${query ? `?${query}` : ""}`),
   getCategoryData: (query) => request(`/api/expenses/analytics/category${query ? `?${query}` : ""}`),
@@ -75,6 +76,13 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload)
     }),
+  getSavingsGoals: () => request("/api/savings-goals"),
+  createSavingsGoal: (payload) =>
+    request("/api/savings-goals", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    }),
+  deleteSavingsGoal: (id) => request(`/api/savings-goals/${id}`, { method: "DELETE" }),
   async downloadReport(type, query) {
     const response = await fetch(`/api/reports/${type}${query ? `?${query}` : ""}`, {
       headers: getHeaders()

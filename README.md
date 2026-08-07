@@ -1,6 +1,6 @@
 # Expense Tracker Application
 
-A full-stack expense tracker with responsive UI, MongoDB persistence, analytics dashboard, budget alerts, CSV and Excel export, and JWT authentication.
+A full-stack smart expense tracker with MongoDB persistence, personalized spending insights, budgets, savings goals, exports, and JWT authentication.
 
 ## Features
 
@@ -8,11 +8,48 @@ A full-stack expense tracker with responsive UI, MongoDB persistence, analytics 
 - Add, edit, delete, search, and filter expenses
 - Categories for Food, Travel, Shopping, Bills, and Entertainment
 - Dashboard analytics with pie, bar, and line charts
-- Monthly budget setting with overspending alerts
+- Smart category suggestions based on expense descriptions (for example, Uber → Travel and Swiggy → Food)
+- Smart Search for phrases such as `food last month` and `travel this month`
+- Monthly budget setting with threshold and overspending alerts
+- Month-end spend forecasting from the current daily spending rate
+- Personalized insights for top categories and month-over-month spending changes
+- Recurring-payment detection for repeat monthly expenses
+- Savings goals with target dates, saved amounts, and progress bars
 - CSV and Excel export
 - Dark mode toggle
 - Modular backend with route, service, and repository layers
-- User-scoped expense and budget data
+- User-scoped expenses, budgets, and savings goals
+
+## Using Smart Features
+
+### Smart category suggestions
+
+When adding an expense, enter a description such as `Uber ride`, `Netflix`, or `electricity bill`. The application suggests a matching category automatically. You can always select a different category manually.
+
+### Smart Search
+
+Use the Smart Search field to quickly apply common filters:
+
+- `food last month` filters Food expenses from the previous month.
+- `travel this month` filters Travel expenses from the current month.
+- Any other text searches expense descriptions.
+
+Use **Clear Filters** to reset Smart Search and every other filter.
+
+### Forecasts, alerts, and recurring payments
+
+The **Smart Assistant** panel shows the projected total for the current month, alerts when your budget is at risk, and identifies repeat monthly transactions such as rent or subscriptions. These results become more useful as more expenses are recorded.
+
+### Savings goals
+
+Use **Savings Goals** to track a specific target. For example:
+
+- Goal name: `New Laptop`
+- Target amount: `60000`
+- Already saved: `15000`
+- Target date: `2026-12-31`
+
+The app displays `₹15,000 of ₹60,000` and a 25% progress bar.
 
 ## Tech Stack
 
@@ -55,6 +92,8 @@ MONGODB_URI="mongodb+srv://<username>:<password>@<cluster>.mongodb.net/expense-t
 ```
 
 5. Add that value to your `.env` file.
+
+If you see `querySrv ENOTFOUND`, the Atlas cluster hostname in `MONGODB_URI` is incorrect or cannot be resolved. Copy the complete connection string again from **Atlas → Database → Connect → Drivers**; do not type the cluster hostname manually.
 
 ### Deploying to a hosting platform
 
