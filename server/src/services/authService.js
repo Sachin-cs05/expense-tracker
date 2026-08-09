@@ -1,7 +1,11 @@
 import { ZodError } from "zod";
 import { createToken } from "../utils/jwt.js";
 import { hashPassword, verifyPassword } from "../utils/password.js";
-import { createUser, findUserByEmail, findUserById } from "../repositories/userRepository.js";
+import {
+  createUser,
+  findUserByEmail,
+  findUserById
+} from "../repositories/userRepository.js";
 import { loginSchema, registerSchema } from "../validation.js";
 
 export class AuthError extends Error {
@@ -14,20 +18,28 @@ export class AuthError extends Error {
 
 function buildAuthResponse(user) {
   return {
-    token: createToken({ sub: user.id, email: user.email }),
+    token: createToken({
+      sub: user.id,
+      email: user.email
+    }),
     user
   };
 }
 
 export async function registerUser(payload) {
   const validated = registerSchema.parse(payload);
+
   const existingUser = await findUserByEmail(validated.email);
 
   if (existingUser) {
-    throw new AuthError("An account with this email already exists.", 409);
+    throw new AuthError(
+      "An account with this email already exists.",
+      409
+    );
   }
 
   const user = await createUser({
+    name: validated.name,
     email: validated.email,
     passwordHash: hashPassword(validated.password)
   });
@@ -37,9 +49,13 @@ export async function registerUser(payload) {
 
 export async function loginUser(payload) {
   const validated = loginSchema.parse(payload);
+
   const userDocument = await findUserByEmail(validated.email);
 
-  if (!userDocument || !verifyPassword(validated.password, userDocument.passwordHash)) {
+  if (
+    !userDocument ||
+    !verifyPassword(validated.password, userDocument.passwordHash)
+  ) {
     throw new AuthError("Invalid email or password.", 401);
   }
 
@@ -66,9 +82,13 @@ export function handleAuthRouteError(error, response) {
   }
 
   if (error instanceof AuthError) {
-    response.status(error.statusCode).json({ message: error.message });
+    response.status(error.statusCode).json({
+      message: error.message
+    });
     return;
   }
 
-  response.status(500).json({ message: error.message || "Authentication failed." });
+  response.status(500).json({
+    message: error.message || "Authentication failed."
+  });
 }
