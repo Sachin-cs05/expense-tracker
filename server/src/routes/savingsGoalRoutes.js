@@ -1,6 +1,6 @@
 import express from "express";
 import { ZodError } from "zod";
-import { addSavingsGoal, getSavingsGoals, removeSavingsGoal } from "../services/savingsGoalService.js";
+import { addSavingsGoal, editSavingsGoal, getSavingsGoals, removeSavingsGoal } from "../services/savingsGoalService.js";
 
 export const savingsGoalRouter = express.Router();
 
@@ -17,6 +17,17 @@ savingsGoalRouter.post("/", async (request, response) => {
       return;
     }
     response.status(500).json({ message: error.message || "Unable to save savings goal." });
+  }
+});
+
+savingsGoalRouter.put("/:id", async (request, response) => {
+  try {
+    const goal = await editSavingsGoal(request.user.id, request.params.id, request.body);
+    if (!goal) return response.status(404).json({ message: "Savings goal not found." });
+    return response.json(goal);
+  } catch (error) {
+    if (error instanceof ZodError) return response.status(400).json({ message: "Validation failed.", issues: error.issues });
+    return response.status(500).json({ message: error.message || "Unable to update savings goal." });
   }
 });
 

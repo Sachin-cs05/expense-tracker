@@ -10,6 +10,11 @@ export async function createSavingsGoal(goal) {
   return createdGoal.toJSON();
 }
 
+export async function updateSavingsGoal(ownerId, id, updates) {
+  const updatedGoal = await SavingsGoal.findOneAndUpdate({ _id: id, ownerId }, updates, { new: true });
+  return updatedGoal?.toJSON() || null;
+}
+
 export async function deleteSavingsGoal(ownerId, id) {
   return SavingsGoal.findOneAndDelete({ _id: id, ownerId });
 }
