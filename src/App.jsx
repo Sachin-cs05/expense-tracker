@@ -33,6 +33,7 @@ const emptyForm = {
 };
 
 const emptyAuthForm = {
+  name: "",
   email: "",
   password: ""
 };

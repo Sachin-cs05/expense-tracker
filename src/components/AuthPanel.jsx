@@ -27,6 +27,20 @@ export function AuthPanel({ authMode, authForm, authMessage, onModeChange, onFor
           </button>
         </div>
 
+        {authMode === "register" ? (
+          <label>
+            Full name
+            <input
+              type="text"
+              value={authForm.name}
+              onChange={(event) => onFormChange((current) => ({ ...current, name: event.target.value }))}
+              placeholder="Your full name"
+              autoComplete="name"
+              required
+            />
+          </label>
+        ) : null}
+
         <label>
           Email
           <input

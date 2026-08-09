@@ -6,7 +6,7 @@ export function Header({ isDarkMode, onToggleTheme, onExport, user, onLogout }) 
         <p className="brand-subtitle">Smart expense management with analytics</p>
       </div>
       <div className="topbar-actions">
-        {user ? <span className="user-pill">{user.email}</span> : null}
+        {user ? <span className="user-pill">{user.name}</span> : null}
         {user ? (
           <>
             <button className="secondary-button" onClick={() => onExport("csv")}>
