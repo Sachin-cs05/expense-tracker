@@ -9,15 +9,9 @@ export function Header({ isDarkMode, onToggleTheme, onExport, user, onLogout }) 
         {user ? <span className="user-pill">{user.name}</span> : null}
         {user ? (
           <>
-            <button className="secondary-button" onClick={() => onExport("csv")}>
-              Export CSV
-            </button>
-            <button className="secondary-button" onClick={() => onExport("excel")}>
-              Export Excel
-            </button>
-            <button className="ghost-button" onClick={onLogout}>
-              Logout
-            </button>
+            <button className="secondary-button" onClick={() => onExport("csv")}>Export CSV</button>
+            <button className="secondary-button" onClick={() => onExport("excel")}>Export Excel</button>
+            <button className="ghost-button" onClick={onLogout}>Logout</button>
           </>
         ) : null}
         <button className="theme-toggle" onClick={onToggleTheme}>

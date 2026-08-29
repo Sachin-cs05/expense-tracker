@@ -342,14 +342,14 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
-      <Header
+    <div className={`app-shell ${authUser ? "" : "auth-app"}`}>
+      {authUser ? <Header
         isDarkMode={isDarkMode}
         onToggleTheme={() => setIsDarkMode((value) => !value)}
         onExport={handleExport}
         user={authUser}
         onLogout={() => clearSession("You have been logged out.")}
-      />
+      /> : null}
 
       {!authUser ? (
         <main className="auth-shell">
@@ -357,12 +357,14 @@ export default function App() {
             authMode={authMode}
             authForm={authForm}
             authMessage={authMessage || (isAuthLoading ? "Restoring your session..." : "")}
+            isDarkMode={isDarkMode}
             onModeChange={(mode) => {
               setAuthMode(mode);
               setAuthMessage("");
             }}
             onFormChange={setAuthForm}
             onSubmit={handleAuthSubmit}
+            onToggleTheme={() => setIsDarkMode((value) => !value)}
           />
         </main>
       ) : (
