@@ -9,15 +9,25 @@ async function mapExportRows(ownerId, filters) {
     Amount: expense.amount,
     Category: expense.category,
     Date: expense.date,
-    Description: expense.description
+    Description: expense.description,
+    "Payment Method": expense.paymentMethod,
+    Notes: expense.notes
   }));
 }
 
 export async function exportToCsv(ownerId, filters) {
   const rows = await mapExportRows(ownerId, filters);
-  const header = ["ID", "Amount", "Category", "Date", "Description"];
+  const header = ["ID", "Amount", "Category", "Date", "Description", "Payment Method", "Notes"];
   const dataRows = rows.map((row) =>
-    [row.ID, row.Amount, row.Category, row.Date, `"${String(row.Description).replaceAll("\"", "\"\"")}"`].join(",")
+    [
+      row.ID,
+      row.Amount,
+      row.Category,
+      row.Date,
+      `"${String(row.Description).replaceAll("\"", "\"\"")}"`,
+      row["Payment Method"],
+      `"${String(row.Notes || "").replaceAll("\"", "\"\"")}"`
+    ].join(",")
   );
 
   return [header.join(","), ...dataRows].join("\n");

@@ -19,6 +19,14 @@ const userSchema = new mongoose.Schema(
     passwordHash: {
       type: String,
       required: true
+    },
+    currency: {
+      type: String,
+      default: "INR"
+    },
+    dateFormat: {
+      type: String,
+      default: "yyyy-MM-dd"
     }
   },
   {

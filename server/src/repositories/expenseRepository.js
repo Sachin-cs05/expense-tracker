@@ -8,6 +8,9 @@ function serializeExpense(expense) {
     category: expense.category,
     date: expense.date,
     description: expense.description,
+    paymentMethod: expense.paymentMethod || "Other",
+    notes: expense.notes || "",
+    spaceId: expense.spaceId ? expense.spaceId.toString() : null,
     createdAt: expense.createdAt,
     updatedAt: expense.updatedAt
   };
@@ -18,6 +21,10 @@ export async function listExpenses(ownerId, filters = {}) {
 
   if (filters.category) {
     query.category = filters.category;
+  }
+
+  if (filters.spaceId) {
+    query.spaceId = filters.spaceId;
   }
 
   if (filters.month) {

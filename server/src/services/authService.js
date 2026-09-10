@@ -4,9 +4,20 @@ import { hashPassword, verifyPassword } from "../utils/password.js";
 import {
   createUser,
   findUserByEmail,
-  findUserById
+  findUserById,
+  findUserDocumentById,
+  updateUser,
+  deleteUserById
 } from "../repositories/userRepository.js";
-import { loginSchema, registerSchema } from "../validation.js";
+import { seedDefaultCategories } from "./categoryService.js";
+import { deleteAllForOwner } from "./cascadeDeleteService.js";
+import {
+  changePasswordSchema,
+  loginSchema,
+  registerSchema,
+  updatePreferencesSchema,
+  updateProfileSchema
+} from "../validation.js";
 
 export class AuthError extends Error {
   constructor(message, statusCode = 401) {
@@ -44,6 +55,8 @@ export async function registerUser(payload) {
     passwordHash: hashPassword(validated.password)
   });
 
+  await seedDefaultCategories(user.id);
+
   return buildAuthResponse(user);
 }
 
@@ -70,6 +83,39 @@ export async function getAuthenticatedUser(userId) {
   }
 
   return user;
+}
+
+export async function updateUserProfile(userId, payload) {
+  const validated = updateProfileSchema.parse(payload);
+  const user = await updateUser(userId, validated);
+  if (!user) throw new AuthError("User not found.", 404);
+  return user;
+}
+
+export async function updateUserPreferences(userId, payload) {
+  const validated = updatePreferencesSchema.parse(payload);
+  const user = await updateUser(userId, validated);
+  if (!user) throw new AuthError("User not found.", 404);
+  return user;
+}
+
+export async function changeUserPassword(userId, payload) {
+  const validated = changePasswordSchema.parse(payload);
+  const userDocument = await findUserDocumentById(userId);
+
+  if (!userDocument || !verifyPassword(validated.currentPassword, userDocument.passwordHash)) {
+    throw new AuthError("Current password is incorrect.", 401);
+  }
+
+  userDocument.passwordHash = hashPassword(validated.newPassword);
+  await userDocument.save();
+  return true;
+}
+
+export async function deleteAccount(userId) {
+  await deleteAllForOwner(userId);
+  await deleteUserById(userId);
+  return true;
 }
 
 export function handleAuthRouteError(error, response) {

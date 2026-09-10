@@ -1,13 +1,21 @@
 import express from "express";
 import { ZodError } from "zod";
-import { expenseCategories } from "../constants.js";
 import { getDailyProgression, getSummary, getMonthlyTrend, getCategoryTotals } from "../services/analyticsService.js";
-import { addExpense, editExpense, getExpenses, removeExpense, suggestExpenseCategory } from "../services/expenseService.js";
+import { getCategories } from "../services/categoryService.js";
+import {
+  addExpense,
+  editExpense,
+  getExpenses,
+  importExpenses,
+  removeExpense,
+  suggestExpenseCategory
+} from "../services/expenseService.js";
 
 export const expenseRouter = express.Router();
 
-expenseRouter.get("/categories", (_request, response) => {
-  response.json(expenseCategories);
+expenseRouter.get("/categories", async (request, response) => {
+  const categories = await getCategories(request.user.id, "expense");
+  response.json(categories.length ? categories.map((category) => category.name) : []);
 });
 
 expenseRouter.get("/suggest-category", (request, response) => {
@@ -40,6 +48,17 @@ expenseRouter.put("/:id", async (request, response) => {
   } catch (error) {
     handleValidationError(error, response);
   }
+});
+
+expenseRouter.post("/import", async (request, response) => {
+  const rows = Array.isArray(request.body?.rows) ? request.body.rows : [];
+
+  if (!rows.length) {
+    response.status(400).json({ message: "No rows to import." });
+    return;
+  }
+
+  response.json(await importExpenses(request.user.id, rows));
 });
 
 expenseRouter.delete("/:id", async (request, response) => {

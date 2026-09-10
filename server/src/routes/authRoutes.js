@@ -1,5 +1,15 @@
 import express from "express";
-import { getAuthenticatedUser, handleAuthRouteError, loginUser, registerUser } from "../services/authService.js";
+import {
+  changeUserPassword,
+  deleteAccount,
+  getAuthenticatedUser,
+  handleAuthRouteError,
+  loginUser,
+  registerUser,
+  updateUserPreferences,
+  updateUserProfile
+} from "../services/authService.js";
+import { requireAuth } from "../middleware/authMiddleware.js";
 import { verifyToken } from "../utils/jwt.js";
 
 export const authRouter = express.Router();
@@ -33,6 +43,40 @@ authRouter.get("/me", async (request, response) => {
     const payload = verifyToken(token);
 
     response.json({ user: await getAuthenticatedUser(payload.sub) });
+  } catch (error) {
+    handleAuthRouteError(error, response);
+  }
+});
+
+authRouter.put("/profile", requireAuth, async (request, response) => {
+  try {
+    response.json({ user: await updateUserProfile(request.user.id, request.body) });
+  } catch (error) {
+    handleAuthRouteError(error, response);
+  }
+});
+
+authRouter.put("/preferences", requireAuth, async (request, response) => {
+  try {
+    response.json({ user: await updateUserPreferences(request.user.id, request.body) });
+  } catch (error) {
+    handleAuthRouteError(error, response);
+  }
+});
+
+authRouter.post("/change-password", requireAuth, async (request, response) => {
+  try {
+    await changeUserPassword(request.user.id, request.body);
+    response.json({ message: "Password updated successfully." });
+  } catch (error) {
+    handleAuthRouteError(error, response);
+  }
+});
+
+authRouter.delete("/account", requireAuth, async (request, response) => {
+  try {
+    await deleteAccount(request.user.id);
+    response.status(204).send();
   } catch (error) {
     handleAuthRouteError(error, response);
   }

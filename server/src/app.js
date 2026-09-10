@@ -9,6 +9,10 @@ import { expenseRouter } from "./routes/expenseRoutes.js";
 import { budgetRouter } from "./routes/budgetRoutes.js";
 import { reportRouter } from "./routes/reportRoutes.js";
 import { savingsGoalRouter } from "./routes/savingsGoalRoutes.js";
+import { incomeRouter } from "./routes/incomeRoutes.js";
+import { categoryRouter } from "./routes/categoryRoutes.js";
+import { recurringRouter } from "./routes/recurringRoutes.js";
+import { spaceRouter } from "./routes/spaceRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +35,10 @@ export function createApp() {
   app.use("/api/budgets", budgetRouter);
   app.use("/api/reports", reportRouter);
   app.use("/api/savings-goals", savingsGoalRouter);
+  app.use("/api/income", incomeRouter);
+  app.use("/api/categories", categoryRouter);
+  app.use("/api/recurring", recurringRouter);
+  app.use("/api/spaces", spaceRouter);
 
   if (fs.existsSync(clientIndexPath)) {
     app.use(express.static(clientDistPath));

@@ -68,3 +68,22 @@ export async function removeExpense(ownerId, id) {
   await deleteExpense(ownerId, id);
   return true;
 }
+
+export async function importExpenses(ownerId, rows) {
+  const results = { inserted: 0, failed: 0, errors: [] };
+
+  for (let index = 0; index < rows.length; index += 1) {
+    try {
+      await addExpense(ownerId, rows[index]);
+      results.inserted += 1;
+    } catch (error) {
+      results.failed += 1;
+      results.errors.push({
+        row: index + 1,
+        message: error.issues ? error.issues.map((issue) => issue.message).join(", ") : error.message
+      });
+    }
+  }
+
+  return results;
+}

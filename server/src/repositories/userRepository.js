@@ -20,3 +20,16 @@ export async function findUserById(id) {
   const user = await User.findById(id);
   return user ? user.toJSON() : null;
 }
+
+export async function updateUser(id, updates) {
+  const user = await User.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+  return user ? user.toJSON() : null;
+}
+
+export async function deleteUserById(id) {
+  return User.findByIdAndDelete(id);
+}
+
+export async function findUserDocumentById(id) {
+  return User.findById(id);
+}
