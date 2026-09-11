@@ -3,7 +3,7 @@ import path from "path";
 
 let loaded = false;
 
-function applyEnvFile(filePath) {
+function applyEnvFile(filePath, force = false) {
   if (!fs.existsSync(filePath)) {
     return false;
   }
@@ -25,7 +25,7 @@ function applyEnvFile(filePath) {
 
     const key = line.slice(0, separatorIndex).trim();
 
-    if (!key || process.env[key] !== undefined) {
+    if (!key || (!force && process.env[key] !== undefined && process.env[key] !== "")) {
       continue;
     }
 
@@ -44,8 +44,8 @@ function applyEnvFile(filePath) {
   return true;
 }
 
-export function loadEnv() {
-  if (loaded) {
+export function loadEnv(force = false) {
+  if (loaded && !force) {
     return;
   }
 
@@ -57,7 +57,7 @@ export function loadEnv() {
   ];
 
   for (const candidate of candidates) {
-    if (applyEnvFile(candidate)) {
+    if (applyEnvFile(candidate, force)) {
       loaded = true;
       return;
     }

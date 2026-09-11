@@ -42,6 +42,14 @@ export function AuthProvider({ children }) {
     return api.register(payload);
   }, []);
 
+  const loginWithToken = useCallback(async (token) => {
+    api.setToken(token);
+    localStorage.setItem("fintrack-token", token);
+    const { user: currentUser } = await api.getMe();
+    setUser(currentUser);
+    return currentUser;
+  }, []);
+
   const logout = useCallback(() => {
     api.clearToken();
     localStorage.removeItem("fintrack-token");
@@ -55,8 +63,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, isLoading, login, register, logout, refreshUser, setUser }),
-    [user, isLoading, login, register, logout, refreshUser]
+    () => ({ user, isLoading, login, register, loginWithToken, logout, refreshUser, setUser }),
+    [user, isLoading, login, register, loginWithToken, logout, refreshUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

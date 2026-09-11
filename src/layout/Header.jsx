@@ -26,7 +26,11 @@ export function Header({ onMenuClick }) {
         <QuickAddMenu />
         <div className="user-menu">
           <button type="button" className="avatar avatar-button" onClick={() => setShowUserMenu((value) => !value)}>
-            {user?.name?.charAt(0).toUpperCase() || "?"}
+            {user?.avatarUrl ? (
+              <img src={user.avatarUrl} alt={user.name} className="avatar-img" />
+            ) : (
+              user?.name?.charAt(0).toUpperCase() || "?"
+            )}
           </button>
           {showUserMenu ? (
             <div className="user-menu-dropdown" onMouseLeave={() => setShowUserMenu(false)}>

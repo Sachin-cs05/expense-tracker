@@ -103,7 +103,11 @@ export async function changeUserPassword(userId, payload) {
   const validated = changePasswordSchema.parse(payload);
   const userDocument = await findUserDocumentById(userId);
 
-  if (!userDocument || !verifyPassword(validated.currentPassword, userDocument.passwordHash)) {
+  if (!userDocument) {
+    throw new AuthError("User not found.", 404);
+  }
+
+  if (userDocument.passwordHash && !verifyPassword(validated.currentPassword, userDocument.passwordHash)) {
     throw new AuthError("Current password is incorrect.", 401);
   }
 

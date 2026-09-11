@@ -18,7 +18,26 @@ const userSchema = new mongoose.Schema(
     },
     passwordHash: {
       type: String,
-      required: true
+      required: false
+    },
+    googleId: {
+      type: String,
+      sparse: true,
+      unique: true
+    },
+    githubId: {
+      type: String,
+      sparse: true,
+      unique: true
+    },
+    avatarUrl: {
+      type: String,
+      trim: true
+    },
+    authProvider: {
+      type: String,
+      enum: ["local", "google", "github"],
+      default: "local"
     },
     currency: {
       type: String,

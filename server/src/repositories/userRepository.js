@@ -16,6 +16,36 @@ export async function findUserByEmail(email) {
   });
 }
 
+export async function findUserByGoogleId(googleId) {
+  return User.findOne({ googleId });
+}
+
+export async function findUserByGithubId(githubId) {
+  return User.findOne({ githubId });
+}
+
+export async function createOAuthUser({ name, email, googleId, githubId, avatarUrl, authProvider }) {
+  const user = await User.create({
+    name,
+    email: email.toLowerCase(),
+    googleId,
+    githubId,
+    avatarUrl,
+    authProvider
+  });
+
+  return user.toJSON();
+}
+
+export async function linkOAuthProvider(id, updates) {
+  const user = await User.findByIdAndUpdate(
+    id,
+    { $set: updates },
+    { new: true, runValidators: true }
+  );
+  return user ? user.toJSON() : null;
+}
+
 export async function findUserById(id) {
   const user = await User.findById(id);
   return user ? user.toJSON() : null;

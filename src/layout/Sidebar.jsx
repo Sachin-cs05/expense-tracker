@@ -67,7 +67,13 @@ export function Sidebar({ user, isOpen, onClose }) {
             ))}
           </div>
           <div className="sidebar-user">
-            <div className="avatar">{user?.name?.charAt(0).toUpperCase() || "?"}</div>
+            <div className="avatar">
+              {user?.avatarUrl ? (
+                <img src={user.avatarUrl} alt={user.name} className="avatar-img" />
+              ) : (
+                user?.name?.charAt(0).toUpperCase() || "?"
+              )}
+            </div>
             <div className="sidebar-user-info">
               <p className="sidebar-user-name">{user?.name}</p>
               <p className="sidebar-user-email">{user?.email}</p>

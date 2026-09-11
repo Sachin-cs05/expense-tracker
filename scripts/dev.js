@@ -12,7 +12,11 @@ const processes = [
   {
     name: "server",
     command: nodeBin,
-    args: ["--watch", path.join(projectRoot, "server", "index.js")]
+    args: [
+      "--watch",
+      `--watch-path=${path.join(projectRoot, ".env")}`,
+      path.join(projectRoot, "server", "index.js")
+    ]
   },
   {
     name: "client",

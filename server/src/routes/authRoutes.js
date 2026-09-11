@@ -9,10 +9,55 @@ import {
   updateUserPreferences,
   updateUserProfile
 } from "../services/authService.js";
+import {
+  getGoogleAuthUrl,
+  handleGoogleCallback,
+  getGithubAuthUrl,
+  handleGithubCallback,
+  buildFrontendRedirect,
+  buildFrontendErrorRedirect
+} from "../services/oauthService.js";
 import { requireAuth } from "../middleware/authMiddleware.js";
 import { verifyToken } from "../utils/jwt.js";
 
 export const authRouter = express.Router();
+
+// ---- OAuth Endpoints ----
+authRouter.get("/google", (request, response) => {
+  try {
+    const authUrl = getGoogleAuthUrl();
+    response.redirect(authUrl);
+  } catch (error) {
+    response.redirect(buildFrontendErrorRedirect(error.message));
+  }
+});
+
+authRouter.get("/google/callback", async (request, response) => {
+  try {
+    const { token } = await handleGoogleCallback(request.query);
+    response.redirect(buildFrontendRedirect(token));
+  } catch (error) {
+    response.redirect(buildFrontendErrorRedirect(error.message));
+  }
+});
+
+authRouter.get("/github", (request, response) => {
+  try {
+    const authUrl = getGithubAuthUrl();
+    response.redirect(authUrl);
+  } catch (error) {
+    response.redirect(buildFrontendErrorRedirect(error.message));
+  }
+});
+
+authRouter.get("/github/callback", async (request, response) => {
+  try {
+    const { token } = await handleGithubCallback(request.query);
+    response.redirect(buildFrontendRedirect(token));
+  } catch (error) {
+    response.redirect(buildFrontendErrorRedirect(error.message));
+  }
+});
 
 authRouter.post("/register", async (request, response) => {
   try {
