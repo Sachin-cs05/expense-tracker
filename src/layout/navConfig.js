@@ -7,7 +7,8 @@ export const mainNavItems = [
   { to: "/savings", label: "Savings Goals", icon: "piggyBank" },
   { to: "/recurring", label: "Recurring", icon: "repeat" },
   { to: "/categories", label: "Categories", icon: "tag" },
-  { to: "/spaces", label: "Spaces", icon: "grid" }
+  { to: "/spaces", label: "Spaces", icon: "grid" },
+  { to: "/ai-assistant", label: "FinTrack AI", icon: "sparkles" }
 ];
 
 export const toolsNavItems = [{ to: "/data", label: "Import / Export", icon: "upload" }];
@@ -18,7 +19,7 @@ export const systemNavItems = [{ to: "/settings", label: "Settings", icon: "sett
 export const mobileNavItems = [
   { to: "/dashboard", label: "Overview", icon: "home" },
   { to: "/expenses", label: "Expenses", icon: "wallet" },
+  { to: "/ai-assistant", label: "AI", icon: "sparkles" },
   { to: "/analytics", label: "Analytics", icon: "barChart" },
-  { to: "/budgets", label: "Budgets", icon: "target" },
   { to: "/settings", label: "Settings", icon: "settings" }
 ];

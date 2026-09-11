@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import fs from "fs";
 import path from "path";
+import multer from "multer";
 import { fileURLToPath } from "url";
 import { requireAuth } from "./middleware/authMiddleware.js";
 import { authRouter } from "./routes/authRoutes.js";
@@ -13,6 +14,9 @@ import { incomeRouter } from "./routes/incomeRoutes.js";
 import { categoryRouter } from "./routes/categoryRoutes.js";
 import { recurringRouter } from "./routes/recurringRoutes.js";
 import { spaceRouter } from "./routes/spaceRoutes.js";
+import { aiRouter } from "./routes/aiRoutes.js";
+
+const receiptUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +43,10 @@ export function createApp() {
   app.use("/api/categories", categoryRouter);
   app.use("/api/recurring", recurringRouter);
   app.use("/api/spaces", spaceRouter);
+
+  // AI routes (receipt upload gets multer middleware)
+  app.post("/api/ai/scan-receipt", requireAuth, receiptUpload.single("receipt"), (req, res, next) => { req.user = req.user; next(); });
+  app.use("/api/ai", aiRouter);
 
   if (fs.existsSync(clientIndexPath)) {
     app.use(express.static(clientDistPath));

@@ -18,6 +18,7 @@ import Categories from "./pages/Categories.jsx";
 import Spaces from "./pages/Spaces.jsx";
 import DataManagement from "./pages/DataManagement.jsx";
 import Settings from "./pages/Settings.jsx";
+import AiAssistant from "./pages/AiAssistant.jsx";
 
 function LoginRoute() {
   const { user, isLoading } = useAuth();
@@ -53,6 +54,7 @@ export default function App() {
                   <Route path="/spaces" element={<Spaces />} />
                   <Route path="/data" element={<DataManagement />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/ai-assistant" element={<AiAssistant />} />
                 </Route>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -129,5 +129,37 @@ export const api = {
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
+  },
+
+  // ---- AI ----
+  aiStatus: () => request("/api/ai/status"),
+  aiChat: (payload) => request("/api/ai/chat", { method: "POST", body: JSON.stringify(payload) }),
+  aiInsights: () => request("/api/ai/insights"),
+  aiPrediction: () => request("/api/ai/prediction"),
+  aiAnomalies: () => request("/api/ai/anomalies"),
+  aiBudget: () => request("/api/ai/budget"),
+  aiHealth: () => request("/api/ai/health"),
+  aiSearch: (payload) => request("/api/ai/search", { method: "POST", body: JSON.stringify(payload) }),
+  aiCategorize: (description) => request("/api/ai/categorize", { method: "POST", body: JSON.stringify({ description }) }),
+  aiConversations: () => request("/api/ai/conversations"),
+
+  async aiScanReceipt(file) {
+    const formData = new FormData();
+    formData.append("receipt", file);
+
+    const response = await fetch("/api/ai/scan-receipt", {
+      method: "POST",
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+      body: formData
+    });
+
+    if (!response.ok) {
+      const errorPayload = await response.json().catch(() => ({}));
+      const error = new Error(errorPayload.message || "Receipt scanning failed.");
+      error.status = response.status;
+      throw error;
+    }
+
+    return response.json();
   }
 };

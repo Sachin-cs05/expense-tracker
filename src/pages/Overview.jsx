@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { api } from "../lib/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { Card, ProgressBar, Skeleton, EmptyState, Badge } from "../ui/Primitives.jsx";
 import { Icon } from "../ui/Icon.jsx";
 import { ExpenseFormModal } from "../components/forms/ExpenseFormModal.jsx";
+import { FinancialHealthGauge, AiInsightsPanel, PredictionCard, AnomalyAlerts } from "../components/ai/AiDashboardWidgets.jsx";
 
 function greetingForHour() {
   const hour = new Date().getHours();
@@ -190,8 +192,37 @@ export default function Overview() {
         </Card>
       ) : null}
 
+      {/* AI-powered sections (load independently) */}
+      <div className="grid-2">
+        <FinancialHealthGauge />
+        <PredictionCard />
+      </div>
+
+      <AiInsightsPanel />
+      <AnomalyAlerts />
+
+      <AiQuickChat />
+
       <ExpenseFormModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} onSaved={loadDashboard} />
     </div>
+  );
+}
+
+function AiQuickChat() {
+  const navigate = useNavigate();
+  return (
+    <Card className="ai-quick-chat-card" onClick={() => navigate("/ai-assistant")} role="button" tabIndex={0}>
+      <div className="ai-quick-chat-content">
+        <div className="ai-quick-chat-icon">
+          <Icon name="sparkles" size={22} />
+        </div>
+        <div>
+          <h3>Ask FinTrack AI</h3>
+          <p className="muted-copy">"Where did I spend the most?" "Can I save ₹5,000?" "Compare my months"</p>
+        </div>
+        <Icon name="chevronRight" size={20} className="ai-quick-chat-arrow" />
+      </div>
+    </Card>
   );
 }
 
