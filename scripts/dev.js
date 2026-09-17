@@ -14,6 +14,7 @@ const processes = [
     command: nodeBin,
     args: [
       "--watch",
+      `--watch-path=${path.join(projectRoot, "server")}`,
       `--watch-path=${path.join(projectRoot, ".env")}`,
       path.join(projectRoot, "server", "index.js")
     ]

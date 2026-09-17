@@ -5,6 +5,7 @@ import { useAppData } from "../context/AppDataContext.jsx";
 import { Card, EmptyState, ProgressBar, Skeleton } from "../ui/Primitives.jsx";
 import { Icon } from "../ui/Icon.jsx";
 import { BudgetFormModal } from "../components/forms/BudgetFormModal.jsx";
+import { VoiceExpenseModal } from "../components/voice/VoiceExpenseModal.jsx";
 
 function formatCurrency(value = 0) {
   return `₹${Number(value).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
@@ -16,6 +17,7 @@ export default function Budgets() {
   const [summary, setSummary] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isVoiceOpen, setIsVoiceOpen] = useState(false);
 
   const load = useCallback(async () => {
     setIsLoading(true);
@@ -44,6 +46,15 @@ export default function Budgets() {
         </div>
         <div className="page-header-actions">
           <input type="month" value={month} onChange={(event) => setMonth(event.target.value)} className="month-picker" />
+          <button
+            type="button"
+            className="btn btn-secondary voice-quick-btn"
+            onClick={() => setIsVoiceOpen(true)}
+            title="Add expense with voice"
+          >
+            <Icon name="mic" size={16} />
+            <span className="voice-btn-label">Voice Entry</span>
+          </button>
           <button type="button" className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
             <Icon name="plus" size={16} />
             {budgetAmount ? "Update Budget" : "Create Budget"}
@@ -120,6 +131,7 @@ export default function Budgets() {
         )}
       </Card>
 
+      <VoiceExpenseModal isOpen={isVoiceOpen} onClose={() => setIsVoiceOpen(false)} onSaved={load} />
       <BudgetFormModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} onSaved={load} defaultMonth={month} />
     </div>
   );

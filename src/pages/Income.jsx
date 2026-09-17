@@ -4,6 +4,7 @@ import { useToast } from "../context/ToastContext.jsx";
 import { Card, ConfirmDialog, EmptyState, SkeletonRows } from "../ui/Primitives.jsx";
 import { Icon } from "../ui/Icon.jsx";
 import { IncomeFormModal } from "../components/forms/IncomeFormModal.jsx";
+import { VoiceExpenseModal } from "../components/voice/VoiceExpenseModal.jsx";
 
 function formatCurrency(value = 0) {
   return `₹${Number(value).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
@@ -15,6 +16,7 @@ export default function Income() {
   const [isLoading, setIsLoading] = useState(true);
   const [editingIncome, setEditingIncome] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isVoiceOpen, setIsVoiceOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
 
   const load = useCallback(async () => {
@@ -52,17 +54,28 @@ export default function Income() {
           <h2>Income</h2>
           <p className="muted-copy">Every source of money coming in.</p>
         </div>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => {
-            setEditingIncome(null);
-            setIsFormOpen(true);
-          }}
-        >
-          <Icon name="plus" size={16} />
-          Add Income
-        </button>
+        <div className="page-header-actions">
+          <button
+            type="button"
+            className="btn btn-secondary voice-quick-btn"
+            onClick={() => setIsVoiceOpen(true)}
+            title="Add expense with voice"
+          >
+            <Icon name="mic" size={16} />
+            <span className="voice-btn-label">Voice Entry</span>
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              setEditingIncome(null);
+              setIsFormOpen(true);
+            }}
+          >
+            <Icon name="plus" size={16} />
+            Add Income
+          </button>
+        </div>
       </div>
 
       <div className="summary-grid summary-grid-3">
@@ -92,7 +105,7 @@ export default function Income() {
                   <th>Source</th>
                   <th>Category</th>
                   <th>Payment</th>
-                  <th className="align-right">Amount</th>
+                  <th>Amount</th>
                   <th aria-label="Actions" />
                 </tr>
               </thead>
@@ -105,24 +118,26 @@ export default function Income() {
                       <span className="category-pill">{income.category}</span>
                     </td>
                     <td data-label="Payment">{income.paymentMethod}</td>
-                    <td data-label="Amount" className="align-right amount-positive">
+                    <td data-label="Amount" className="amount-positive">
                       +{formatCurrency(income.amount)}
                     </td>
-                    <td data-label="Actions" className="row-actions">
-                      <button
-                        type="button"
-                        className="icon-button"
-                        onClick={() => {
-                          setEditingIncome(income);
-                          setIsFormOpen(true);
-                        }}
-                        aria-label="Edit income"
-                      >
-                        <Icon name="edit" size={15} />
-                      </button>
-                      <button type="button" className="icon-button danger" onClick={() => setPendingDeleteId(income.id)} aria-label="Delete income">
-                        <Icon name="trash" size={15} />
-                      </button>
+                    <td data-label="Actions" className="cell-actions">
+                      <div className="row-actions">
+                        <button
+                          type="button"
+                          className="icon-button"
+                          onClick={() => {
+                            setEditingIncome(income);
+                            setIsFormOpen(true);
+                          }}
+                          aria-label="Edit income"
+                        >
+                          <Icon name="edit" size={15} />
+                        </button>
+                        <button type="button" className="icon-button danger" onClick={() => setPendingDeleteId(income.id)} aria-label="Delete income">
+                          <Icon name="trash" size={15} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -143,6 +158,11 @@ export default function Income() {
         )}
       </Card>
 
+      <VoiceExpenseModal
+        isOpen={isVoiceOpen}
+        onClose={() => setIsVoiceOpen(false)}
+        onSaved={load}
+      />
       <IncomeFormModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} onSaved={load} income={editingIncome} />
       <ConfirmDialog
         isOpen={Boolean(pendingDeleteId)}

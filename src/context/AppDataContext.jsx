@@ -21,11 +21,18 @@ export const DEFAULT_INCOME_CATEGORIES = [
   { id: "default-other", name: "Other", icon: "➕", color: "#6B7280" }
 ];
 
+export const DEFAULT_SPACES = [
+  { id: "default-space-personal", name: "Personal", icon: "🏠", color: "#10B981", description: "Everyday personal expenses", totals: { totalExpenses: 0, totalIncome: 0 } },
+  { id: "default-space-work", name: "Work", icon: "💼", color: "#4F46E5", description: "Work & business expenses", totals: { totalExpenses: 0, totalIncome: 0 } },
+  { id: "default-space-travel", name: "Travel & Trips", icon: "✈️", color: "#0EA5E9", description: "Vacation & trip spending", totals: { totalExpenses: 0, totalIncome: 0 } },
+  { id: "default-space-family", name: "Family", icon: "👨‍👩‍👧‍👦", color: "#EC4899", description: "Shared family expenses", totals: { totalExpenses: 0, totalIncome: 0 } }
+];
+
 export function AppDataProvider({ children }) {
   const { user } = useAuth();
   const [expenseCategories, setExpenseCategories] = useState(DEFAULT_EXPENSE_CATEGORIES);
   const [incomeCategories, setIncomeCategories] = useState(DEFAULT_INCOME_CATEGORIES);
-  const [spaces, setSpaces] = useState([]);
+  const [spaces, setSpaces] = useState(DEFAULT_SPACES);
   const [isReady, setIsReady] = useState(false);
 
   const refreshCategories = useCallback(async () => {
@@ -45,7 +52,13 @@ export function AppDataProvider({ children }) {
   }, []);
 
   const refreshSpaces = useCallback(async () => {
-    setSpaces(await api.getSpaces());
+    try {
+      let fetchedSpaces = await api.getSpaces();
+      if (!fetchedSpaces || fetchedSpaces.length === 0) fetchedSpaces = DEFAULT_SPACES;
+      setSpaces(fetchedSpaces);
+    } catch {
+      setSpaces(DEFAULT_SPACES);
+    }
   }, []);
 
   useEffect(() => {

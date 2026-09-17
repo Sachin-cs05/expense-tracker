@@ -45,7 +45,9 @@ const paths = {
   messageCircle: "M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6.7-3L3 21l2.5-2.3A9 9 0 1 1 21 12Z",
   camera: "M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2v11ZM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z",
   send: "m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13",
-  activity: "M22 12h-4l-3 9L9 3l-3 9H2"
+  activity: "M22 12h-4l-3 9L9 3l-3 9H2",
+  mic: "M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z M19 10v2a7 7 0 0 1-14 0v-2 M12 19v3 M8 22h8",
+  micOff: "M1 1l22 22 M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V5a3 3 0 0 0-5.94-.6 M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23 M12 19v3 M8 22h8"
 };
 
 export function Icon({ name, size = 18, strokeWidth = 1.8, className = "" }) {

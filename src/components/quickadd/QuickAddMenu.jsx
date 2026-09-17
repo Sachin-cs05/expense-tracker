@@ -6,9 +6,11 @@ import { BudgetFormModal } from "../forms/BudgetFormModal.jsx";
 import { SavingsGoalFormModal } from "../forms/SavingsGoalFormModal.jsx";
 import { RecurringFormModal } from "../forms/RecurringFormModal.jsx";
 import { CategoryFormModal } from "../forms/CategoryFormModal.jsx";
+import { VoiceExpenseModal } from "../voice/VoiceExpenseModal.jsx";
 import { useAppData } from "../../context/AppDataContext.jsx";
 
 const options = [
+  { key: "voice", label: "Voice Expense", icon: "mic" },
   { key: "expense", label: "Expense", icon: "wallet" },
   { key: "income", label: "Income", icon: "trendingUp" },
   { key: "budget", label: "Budget", icon: "target" },
@@ -20,15 +22,35 @@ const options = [
 export function QuickAddMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
+  const [prefilledExpense, setPrefilledExpense] = useState(null);
   const { refreshCategories } = useAppData();
 
   function openModal(key) {
+    if (key !== "expense") {
+      setPrefilledExpense(null);
+    }
     setActiveModal(key);
     setIsMenuOpen(false);
   }
 
+  function handleVoiceEdit(expense) {
+    setPrefilledExpense(expense);
+    setActiveModal("expense");
+  }
+
   return (
     <div className="quick-add">
+      <button
+        type="button"
+        className="btn btn-secondary voice-quick-btn"
+        onClick={() => openModal("voice")}
+        title="Add Expense with Voice"
+        aria-label="Add expense with voice"
+      >
+        <Icon name="mic" size={16} />
+        <span className="voice-btn-label">Voice Entry</span>
+      </button>
+
       <button type="button" className="btn btn-primary" onClick={() => setIsMenuOpen((value) => !value)}>
         <Icon name="plus" size={16} />
         Add
@@ -48,7 +70,19 @@ export function QuickAddMenu() {
         </>
       ) : null}
 
-      <ExpenseFormModal isOpen={activeModal === "expense"} onClose={() => setActiveModal(null)} />
+      <VoiceExpenseModal
+        isOpen={activeModal === "voice"}
+        onClose={() => setActiveModal(null)}
+        onOpenEditForm={handleVoiceEdit}
+      />
+      <ExpenseFormModal
+        isOpen={activeModal === "expense"}
+        onClose={() => {
+          setActiveModal(null);
+          setPrefilledExpense(null);
+        }}
+        expense={prefilledExpense}
+      />
       <IncomeFormModal isOpen={activeModal === "income"} onClose={() => setActiveModal(null)} />
       <BudgetFormModal isOpen={activeModal === "budget"} onClose={() => setActiveModal(null)} />
       <SavingsGoalFormModal isOpen={activeModal === "goal"} onClose={() => setActiveModal(null)} />

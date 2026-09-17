@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { Card, ProgressBar, Skeleton, EmptyState, Badge } from "../ui/Primitives.jsx";
 import { Icon } from "../ui/Icon.jsx";
 import { ExpenseFormModal } from "../components/forms/ExpenseFormModal.jsx";
+import { VoiceExpenseModal } from "../components/voice/VoiceExpenseModal.jsx";
 import { FinancialHealthGauge, AiInsightsPanel, PredictionCard, AnomalyAlerts } from "../components/ai/AiDashboardWidgets.jsx";
 
 function greetingForHour() {
@@ -29,6 +30,8 @@ export default function Overview() {
   const [dailyData, setDailyData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isVoiceOpen, setIsVoiceOpen] = useState(false);
+  const [prefilledExpense, setPrefilledExpense] = useState(null);
 
   const loadDashboard = useCallback(async () => {
     setIsLoading(true);
@@ -70,7 +73,23 @@ export default function Overview() {
         </div>
         <div className="page-header-actions">
           <input type="month" value={month} onChange={(event) => setMonth(event.target.value)} className="month-picker" />
-          <button type="button" className="btn btn-primary" onClick={() => setIsAddOpen(true)}>
+          <button
+            type="button"
+            className="btn btn-secondary voice-quick-btn"
+            onClick={() => setIsVoiceOpen(true)}
+            title="Add expense with voice"
+          >
+            <Icon name="mic" size={16} />
+            <span className="voice-btn-label">Voice Entry</span>
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              setPrefilledExpense(null);
+              setIsAddOpen(true);
+            }}
+          >
             <Icon name="plus" size={16} />
             Add Expense
           </button>
@@ -203,7 +222,24 @@ export default function Overview() {
 
       <AiQuickChat />
 
-      <ExpenseFormModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} onSaved={loadDashboard} />
+      <VoiceExpenseModal
+        isOpen={isVoiceOpen}
+        onClose={() => setIsVoiceOpen(false)}
+        onSaved={loadDashboard}
+        onOpenEditForm={(exp) => {
+          setPrefilledExpense(exp);
+          setIsAddOpen(true);
+        }}
+      />
+      <ExpenseFormModal
+        isOpen={isAddOpen}
+        onClose={() => {
+          setIsAddOpen(false);
+          setPrefilledExpense(null);
+        }}
+        onSaved={loadDashboard}
+        expense={prefilledExpense}
+      />
     </div>
   );
 }

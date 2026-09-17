@@ -1,3 +1,4 @@
+import { defaultSpaces } from "../constants.js";
 import {
   createSpace,
   deleteSpace,
@@ -8,8 +9,21 @@ import {
 } from "../repositories/spaceRepository.js";
 import { spaceSchema } from "../validation.js";
 
+export async function seedDefaultSpaces(ownerId) {
+  const existing = await listSpaces(ownerId);
+  if (existing.length > 0) return;
+
+  for (const space of defaultSpaces) {
+    await createSpace({ ownerId, ...space });
+  }
+}
+
 export async function getSpaces(ownerId) {
-  const spaces = await listSpaces(ownerId);
+  let spaces = await listSpaces(ownerId);
+  if (spaces.length === 0) {
+    await seedDefaultSpaces(ownerId);
+    spaces = await listSpaces(ownerId);
+  }
 
   return Promise.all(
     spaces.map(async (space) => ({

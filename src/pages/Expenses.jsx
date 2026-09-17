@@ -5,6 +5,7 @@ import { useToast } from "../context/ToastContext.jsx";
 import { Card, ConfirmDialog, EmptyState, SkeletonRows } from "../ui/Primitives.jsx";
 import { Icon } from "../ui/Icon.jsx";
 import { ExpenseFormModal } from "../components/forms/ExpenseFormModal.jsx";
+import { VoiceExpenseModal } from "../components/voice/VoiceExpenseModal.jsx";
 
 const PAGE_SIZE = 10;
 
@@ -21,6 +22,7 @@ export default function Expenses() {
   const [page, setPage] = useState(1);
   const [editingExpense, setEditingExpense] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isVoiceOpen, setIsVoiceOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
 
   const load = useCallback(async () => {
@@ -70,17 +72,28 @@ export default function Expenses() {
           <h2>Expenses</h2>
           <p className="muted-copy">Track and manage everything you spend.</p>
         </div>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => {
-            setEditingExpense(null);
-            setIsFormOpen(true);
-          }}
-        >
-          <Icon name="plus" size={16} />
-          Add Expense
-        </button>
+        <div className="page-header-actions">
+          <button
+            type="button"
+            className="btn btn-secondary voice-quick-btn"
+            onClick={() => setIsVoiceOpen(true)}
+            title="Add expense with voice"
+          >
+            <Icon name="mic" size={16} />
+            <span className="voice-btn-label">Voice Entry</span>
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              setEditingExpense(null);
+              setIsFormOpen(true);
+            }}
+          >
+            <Icon name="plus" size={16} />
+            Add Expense
+          </button>
+        </div>
       </div>
 
       <div className="summary-grid summary-grid-3">
@@ -132,7 +145,7 @@ export default function Expenses() {
                     <th>Description</th>
                     <th>Category</th>
                     <th>Payment</th>
-                    <th className="align-right">Amount</th>
+                    <th>Amount</th>
                     <th aria-label="Actions" />
                   </tr>
                 </thead>
@@ -145,24 +158,26 @@ export default function Expenses() {
                         <span className="category-pill">{expense.category}</span>
                       </td>
                       <td data-label="Payment">{expense.paymentMethod}</td>
-                      <td data-label="Amount" className="align-right amount-negative">
+                      <td data-label="Amount" className="amount-negative">
                         -{formatCurrency(expense.amount)}
                       </td>
-                      <td data-label="Actions" className="row-actions">
-                        <button
-                          type="button"
-                          className="icon-button"
-                          onClick={() => {
-                            setEditingExpense(expense);
-                            setIsFormOpen(true);
-                          }}
-                          aria-label="Edit expense"
-                        >
-                          <Icon name="edit" size={15} />
-                        </button>
-                        <button type="button" className="icon-button danger" onClick={() => setPendingDeleteId(expense.id)} aria-label="Delete expense">
-                          <Icon name="trash" size={15} />
-                        </button>
+                      <td data-label="Actions" className="cell-actions">
+                        <div className="row-actions">
+                          <button
+                            type="button"
+                            className="icon-button"
+                            onClick={() => {
+                              setEditingExpense(expense);
+                              setIsFormOpen(true);
+                            }}
+                            aria-label="Edit expense"
+                          >
+                            <Icon name="edit" size={15} />
+                          </button>
+                          <button type="button" className="icon-button danger" onClick={() => setPendingDeleteId(expense.id)} aria-label="Delete expense">
+                            <Icon name="trash" size={15} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -197,6 +212,15 @@ export default function Expenses() {
         )}
       </Card>
 
+      <VoiceExpenseModal
+        isOpen={isVoiceOpen}
+        onClose={() => setIsVoiceOpen(false)}
+        onSaved={load}
+        onOpenEditForm={(exp) => {
+          setEditingExpense(exp);
+          setIsFormOpen(true);
+        }}
+      />
       <ExpenseFormModal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} onSaved={load} expense={editingExpense} />
       <ConfirmDialog
         isOpen={Boolean(pendingDeleteId)}

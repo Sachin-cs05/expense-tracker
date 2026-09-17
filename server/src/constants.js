@@ -20,3 +20,10 @@ export const defaultIncomeCategories = [
 export const recurringFrequencies = ["weekly", "monthly", "yearly"];
 
 export const currencies = ["INR", "USD", "EUR", "GBP"];
+
+export const defaultSpaces = [
+  { name: "Personal", icon: "🏠", color: "#10B981", description: "Everyday personal expenses" },
+  { name: "Work", icon: "💼", color: "#4F46E5", description: "Work & business expenses" },
+  { name: "Travel & Trips", icon: "✈️", color: "#0EA5E9", description: "Vacation & trip spending" },
+  { name: "Family", icon: "👨‍👩‍👧‍👦", color: "#EC4899", description: "Shared family expenses" }
+];

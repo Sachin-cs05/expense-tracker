@@ -9,6 +9,7 @@ import { calculateFinancialHealth } from "../services/ai/financialHealth.js";
 import { parseNaturalLanguageSearch } from "../services/ai/nlpSearch.js";
 import { suggestCategory } from "../services/ai/categorizer.js";
 import { scanReceipt } from "../services/ai/receiptScanner.js";
+import { parseVoiceExpenses } from "../services/ai/voiceParser.js";
 import { getCategories } from "../services/categoryService.js";
 import { listExpenses } from "../repositories/expenseRepository.js";
 import { AiConversation } from "../models/AiConversation.js";
@@ -202,6 +203,23 @@ aiRouter.post("/scan-receipt", requireAi, async (request, response) => {
     }
 
     const result = await scanReceipt(request.file.buffer, request.file.mimetype);
+    response.json(result);
+  } catch (error) {
+    handleAiError(error, response);
+  }
+});
+
+// POST /api/ai/parse-voice — Voice Expense Entry Parsing
+aiRouter.post("/parse-voice", async (request, response) => {
+  try {
+    const { text } = request.body;
+
+    if (!text || typeof text !== "string" || text.trim().length === 0) {
+      response.status(400).json({ message: "Voice transcript text is required." });
+      return;
+    }
+
+    const result = await parseVoiceExpenses(request.user.id, text.trim());
     response.json(result);
   } catch (error) {
     handleAiError(error, response);

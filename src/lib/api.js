@@ -141,6 +141,7 @@ export const api = {
   aiHealth: () => request("/api/ai/health"),
   aiSearch: (payload) => request("/api/ai/search", { method: "POST", body: JSON.stringify(payload) }),
   aiCategorize: (description) => request("/api/ai/categorize", { method: "POST", body: JSON.stringify({ description }) }),
+  parseVoiceExpense: (text) => request("/api/ai/parse-voice", { method: "POST", body: JSON.stringify({ text }) }),
   aiConversations: () => request("/api/ai/conversations"),
 
   async aiScanReceipt(file) {
