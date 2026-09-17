@@ -21,7 +21,12 @@ export async function seedDefaultCategories(ownerId) {
 }
 
 export async function getCategories(ownerId, type) {
-  return listCategories(ownerId, type);
+  let categories = await listCategories(ownerId, type);
+  if (categories.length === 0) {
+    await seedDefaultCategories(ownerId);
+    categories = await listCategories(ownerId, type);
+  }
+  return categories;
 }
 
 export async function addCategory(ownerId, payload) {

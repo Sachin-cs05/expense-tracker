@@ -4,20 +4,44 @@ import { useAuth } from "./AuthContext.jsx";
 
 const AppDataContext = createContext(null);
 
+export const DEFAULT_EXPENSE_CATEGORIES = [
+  { id: "default-food", name: "Food", icon: "🍔", color: "#F59E0B" },
+  { id: "default-travel", name: "Travel", icon: "🚗", color: "#0EA5E9" },
+  { id: "default-shopping", name: "Shopping", icon: "🛍️", color: "#EC4899" },
+  { id: "default-bills", name: "Bills", icon: "💡", color: "#EF4444" },
+  { id: "default-entertainment", name: "Entertainment", icon: "🎬", color: "#8B5CF6" },
+  { id: "default-health", name: "Health", icon: "🏥", color: "#10B981" }
+];
+
+export const DEFAULT_INCOME_CATEGORIES = [
+  { id: "default-salary", name: "Salary", icon: "💼", color: "#10B981" },
+  { id: "default-freelance", name: "Freelance", icon: "🧑‍💻", color: "#4F46E5" },
+  { id: "default-investment", name: "Investment", icon: "📈", color: "#06B6D4" },
+  { id: "default-gift", name: "Gift", icon: "🎁", color: "#F59E0B" },
+  { id: "default-other", name: "Other", icon: "➕", color: "#6B7280" }
+];
+
 export function AppDataProvider({ children }) {
   const { user } = useAuth();
-  const [expenseCategories, setExpenseCategories] = useState([]);
-  const [incomeCategories, setIncomeCategories] = useState([]);
+  const [expenseCategories, setExpenseCategories] = useState(DEFAULT_EXPENSE_CATEGORIES);
+  const [incomeCategories, setIncomeCategories] = useState(DEFAULT_INCOME_CATEGORIES);
   const [spaces, setSpaces] = useState([]);
   const [isReady, setIsReady] = useState(false);
 
   const refreshCategories = useCallback(async () => {
-    const [expenseCats, incomeCats] = await Promise.all([
-      api.getCategories("expense"),
-      api.getCategories("income")
-    ]);
-    setExpenseCategories(expenseCats);
-    setIncomeCategories(incomeCats);
+    try {
+      let [expenseCats, incomeCats] = await Promise.all([
+        api.getCategories("expense"),
+        api.getCategories("income")
+      ]);
+      if (!expenseCats || expenseCats.length === 0) expenseCats = DEFAULT_EXPENSE_CATEGORIES;
+      if (!incomeCats || incomeCats.length === 0) incomeCats = DEFAULT_INCOME_CATEGORIES;
+      setExpenseCategories(expenseCats);
+      setIncomeCategories(incomeCats);
+    } catch {
+      setExpenseCategories(DEFAULT_EXPENSE_CATEGORIES);
+      setIncomeCategories(DEFAULT_INCOME_CATEGORIES);
+    }
   }, []);
 
   const refreshSpaces = useCallback(async () => {

@@ -2527,16 +2527,17 @@ textarea {
   align-items: flex-start;
   gap: 4px;
   padding: 14px 16px;
-  background: var(--bg);
+  background: var(--card-secondary);
   border: 1px solid var(--border);
   border-radius: 12px;
   cursor: pointer;
   text-align: left;
   transition: all 0.2s;
+  color: var(--text);
 }
 .ai-prompt-pill:hover {
   border-color: var(--primary);
-  background: var(--bg-muted);
+  background: var(--primary-soft);
   transform: translateY(-1px);
 }
 .ai-prompt-pill:disabled {
@@ -2547,6 +2548,7 @@ textarea {
 .ai-prompt-label {
   font-size: 0.82rem;
   font-weight: 600;
+  color: var(--text);
 }
 .ai-prompt-text {
   font-size: 0.78rem;

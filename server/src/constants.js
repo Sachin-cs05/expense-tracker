@@ -1,11 +1,12 @@
-export const expenseCategories = ["Food", "Travel", "Shopping", "Bills", "Entertainment"];
+export const expenseCategories = ["Food", "Travel", "Shopping", "Bills", "Entertainment", "Health"];
 
 export const defaultExpenseCategories = [
   { name: "Food", icon: "🍔", color: "#F59E0B" },
   { name: "Travel", icon: "🚗", color: "#0EA5E9" },
   { name: "Shopping", icon: "🛍️", color: "#EC4899" },
   { name: "Bills", icon: "💡", color: "#EF4444" },
-  { name: "Entertainment", icon: "🎬", color: "#8B5CF6" }
+  { name: "Entertainment", icon: "🎬", color: "#8B5CF6" },
+  { name: "Health", icon: "🏥", color: "#10B981" }
 ];
 
 export const defaultIncomeCategories = [
