@@ -25,6 +25,10 @@ export default defineConfig({
             return "charts";
           }
 
+          if (id.includes("framer-motion")) {
+            return "motion";
+          }
+
           return "vendor";
         }
       }

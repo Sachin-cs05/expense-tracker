@@ -4,6 +4,7 @@ import { Sidebar } from "./Sidebar.jsx";
 import { Header } from "./Header.jsx";
 import { MobileNav } from "./MobileNav.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { PageTransition } from "../ui/PageTransition.jsx";
 
 export function AppShell() {
   const { user } = useAuth();
@@ -15,7 +16,9 @@ export function AppShell() {
       <div className="app-main">
         <Header onMenuClick={() => setIsSidebarOpen(true)} />
         <main className="app-content">
-          <Outlet />
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
         </main>
         <MobileNav />
       </div>

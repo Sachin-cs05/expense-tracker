@@ -155,7 +155,7 @@ export default function Expenses() {
                       <td data-label="Date">{expense.date}</td>
                       <td data-label="Description">{expense.description}</td>
                       <td data-label="Category">
-                        <span className="category-pill">{expense.category}</span>
+                        <span className="category-pill" data-category={expense.category}>{expense.category}</span>
                       </td>
                       <td data-label="Payment">{expense.paymentMethod}</td>
                       <td data-label="Amount" className="amount-negative">

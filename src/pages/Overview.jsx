@@ -9,6 +9,9 @@ import { Icon } from "../ui/Icon.jsx";
 import { ExpenseFormModal } from "../components/forms/ExpenseFormModal.jsx";
 import { VoiceExpenseModal } from "../components/voice/VoiceExpenseModal.jsx";
 import { FinancialHealthGauge, AiInsightsPanel, PredictionCard, AnomalyAlerts } from "../components/ai/AiDashboardWidgets.jsx";
+import { AnimatedNumber } from "../ui/AnimatedNumber.jsx";
+import { ChartFadeIn } from "../ui/AnimatedCard.jsx";
+import { AnimatedProgressBar } from "../ui/AnimatedProgressBar.jsx";
 
 function greetingForHour() {
   const hour = new Date().getHours();
@@ -118,6 +121,7 @@ export default function Overview() {
           {isLoading ? (
             <Skeleton height={220} />
           ) : dailyData.length ? (
+            <ChartFadeIn>
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={dailyData}>
                 <defs>
@@ -135,6 +139,7 @@ export default function Overview() {
                 <Area type="monotone" dataKey="cumulativeTotal" stroke="var(--primary)" fill="url(#spendGradient)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
+            </ChartFadeIn>
           ) : (
             <EmptyState icon="barChart" title="No spending yet" description="Add an expense to see your trend appear here." />
           )}
@@ -274,7 +279,9 @@ function SummaryCard({ label, value, tone, icon, loading, fallback }) {
       ) : value === null || value === undefined ? (
         <p className="summary-card-value muted-copy">{fallback || "—"}</p>
       ) : (
-        <p className="summary-card-value">{formatCurrency(value)}</p>
+        <p className="summary-card-value">
+          <AnimatedNumber value={value} prefix="₹" formatOptions={{ style: "currency" }} />
+        </p>
       )}
     </Card>
   );

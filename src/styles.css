@@ -1,53 +1,88 @@
 /* ============ Design tokens ============ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root,
 [data-theme="light"] {
-  --bg: #F7F6F2;
-  --bg-muted: #F0EFEA;
+  --bg: #F0F4F8;
+  --bg-muted: #E2E8F0;
   --card: #ffffff;
-  --card-secondary: #FAFAF7;
+  --card-secondary: #F8FAFC;
   --sidebar: #ffffff;
-  --primary: #176B5B;
-  --primary-hover: #125447;
-  --primary-soft: #E6F1EE;
-  --accent: #D99A2B;
-  --accent-soft: #F8EFD9;
-  --text: #202522;
-  --text-secondary: #6B726E;
-  --border: #E5E3DD;
-  --positive: #2E806D;
-  --positive-soft: #E5F1ED;
-  --negative: #C65D5D;
-  --negative-soft: #F8E8E8;
-  --warning: #D99A2B;
-  --warning-soft: #F8EFD9;
-  --shadow: 0 1px 2px rgba(30, 30, 28, 0.03), 0 1px 3px rgba(30, 30, 28, 0.04);
-  --shadow-md: 0 4px 14px rgba(30, 30, 28, 0.07);
+  --primary: #0D9488;
+  --primary-hover: #0F766E;
+  --primary-soft: #CCFBF1;
+  --accent: #14B8A6;
+  --accent-soft: #F0FDFA;
+  --text: #0F172A;
+  --text-secondary: #64748B;
+  --border: #E2E8F0;
+  --positive: #059669;
+  --positive-soft: #D1FAE5;
+  --negative: #DC2626;
+  --negative-soft: #FEE2E2;
+  --warning: #D97706;
+  --warning-soft: #FEF3C7;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.1);
+  --glow-primary: 0 0 20px rgba(13, 148, 136, 0.12);
   --radius: 14px;
   --radius-sm: 10px;
+
+  /* Category colors — consistent across charts and badges */
+  --cat-food: #F59E0B;
+  --cat-travel: #3B82F6;
+  --cat-shopping: #8B5CF6;
+  --cat-bills: #EF4444;
+  --cat-entertainment: #EC4899;
+  --cat-health: #10B981;
+  --cat-education: #6366F1;
+  --cat-other: #64748B;
 }
 
 [data-theme="dark"] {
-  --bg: #151816;
-  --bg-muted: #1B1F1C;
-  --card: #202521;
-  --card-secondary: #252A26;
-  --sidebar: #191D1A;
-  --primary: #4FA58F;
-  --primary-hover: #5DB89F;
-  --primary-soft: #203A33;
-  --accent: #D9A84A;
-  --accent-soft: #3A3222;
-  --text: #F1F2EF;
-  --text-secondary: #A7AEA9;
-  --border: #343A35;
-  --positive: #5CB89F;
-  --positive-soft: #1D3A30;
-  --negative: #D47B7B;
-  --negative-soft: #3A2424;
-  --warning: #D9A84A;
-  --warning-soft: #3A3222;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.25);
+  --bg: #0F172A;
+  --bg-muted: #1E293B;
+  --card: #1E293B;
+  --card-secondary: #334155;
+  --sidebar: #111827;
+  --primary: #2DD4BF;
+  --primary-hover: #14B8A6;
+  --primary-soft: rgba(45, 212, 191, 0.12);
+  --accent: #2DD4BF;
+  --accent-soft: rgba(45, 212, 191, 0.08);
+  --text: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --border: #334155;
+  --positive: #34D399;
+  --positive-soft: rgba(52, 211, 153, 0.12);
+  --negative: #F87171;
+  --negative-soft: rgba(248, 113, 113, 0.12);
+  --warning: #FBBF24;
+  --warning-soft: rgba(251, 191, 36, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+  --glow-primary: 0 0 20px rgba(45, 212, 191, 0.15);
+
+  /* Category colors — slightly brighter for dark backgrounds */
+  --cat-food: #FBBF24;
+  --cat-travel: #60A5FA;
+  --cat-shopping: #A78BFA;
+  --cat-bills: #F87171;
+  --cat-entertainment: #F472B6;
+  --cat-health: #34D399;
+  --cat-education: #818CF8;
+  --cat-other: #94A3B8;
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 * {
@@ -528,7 +563,7 @@ button {
 
 .btn-primary:hover:not(:disabled) {
   background: var(--primary-hover);
-  box-shadow: 0 2px 8px rgba(23, 107, 91, 0.18);
+  box-shadow: 0 2px 12px rgba(13, 148, 136, 0.25);
 }
 
 .btn-secondary {
@@ -576,7 +611,11 @@ button {
   border-radius: var(--radius);
   padding: 20px;
   box-shadow: var(--shadow);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .card-header {
@@ -773,7 +812,8 @@ textarea {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(32, 37, 34, 0.45);
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -783,7 +823,7 @@ textarea {
 }
 
 [data-theme="dark"] .modal-overlay {
-  background: rgba(10, 12, 10, 0.6);
+  background: rgba(2, 6, 23, 0.65);
 }
 
 .modal-panel {
@@ -917,6 +957,15 @@ textarea {
   font-size: 12px;
   font-weight: 600;
 }
+
+/* Category-specific pill colors */
+.category-pill[data-category="Food"] { background: color-mix(in srgb, var(--cat-food) 15%, transparent); color: var(--cat-food); }
+.category-pill[data-category="Travel"] { background: color-mix(in srgb, var(--cat-travel) 15%, transparent); color: var(--cat-travel); }
+.category-pill[data-category="Shopping"] { background: color-mix(in srgb, var(--cat-shopping) 15%, transparent); color: var(--cat-shopping); }
+.category-pill[data-category="Bills"] { background: color-mix(in srgb, var(--cat-bills) 15%, transparent); color: var(--cat-bills); }
+.category-pill[data-category="Entertainment"] { background: color-mix(in srgb, var(--cat-entertainment) 15%, transparent); color: var(--cat-entertainment); }
+.category-pill[data-category="Health"] { background: color-mix(in srgb, var(--cat-health) 15%, transparent); color: var(--cat-health); }
+.category-pill[data-category="Education"] { background: color-mix(in srgb, var(--cat-education) 15%, transparent); color: var(--cat-education); }
 
 .cell-actions {
   text-align: right;
@@ -1101,6 +1150,14 @@ textarea {
 
 .progress-danger {
   background: var(--negative);
+}
+
+/* Animated progress bar (framer-motion powered) */
+.animated-progress-track {
+  width: 100%;
+  border-radius: 999px;
+  background: var(--bg-muted);
+  overflow: hidden;
 }
 
 /* ============ Toasts ============ */
@@ -1411,7 +1468,7 @@ textarea {
 .tab-row button.active {
   background: var(--primary);
   color: #fff;
-  box-shadow: 0 1px 3px rgba(23, 107, 91, 0.2);
+  box-shadow: 0 1px 3px rgba(13, 148, 136, 0.25);
 }
 
 .category-grid {
@@ -1561,7 +1618,7 @@ textarea {
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background: #0B2E27 linear-gradient(155deg, #103C33 0%, #0B2E27 50%, #08241E 100%);
+  background: #0F172A linear-gradient(155deg, #1E293B 0%, #0F172A 50%, #020617 100%);
   border-right: 1px solid rgba(255, 255, 255, 0.07);
   display: flex;
   flex-direction: column;
@@ -1576,7 +1633,7 @@ textarea {
   width: 550px;
   height: 550px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(46, 128, 109, 0.22) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.2) 0%, transparent 70%);
   pointer-events: none;
   filter: blur(50px);
 }
@@ -1836,11 +1893,11 @@ textarea {
 }
 
 [data-theme="dark"] .auth-form-section {
-  background: #111614;
+  background: #0F172A;
 }
 
 [data-theme="light"] .auth-form-section {
-  background: #F7F6F2;
+  background: #F0F4F8;
 }
 
 /* Top bar theme toggle */
@@ -1893,7 +1950,7 @@ textarea {
 }
 
 .auth-form-leaf-icon {
-  color: #176B5B;
+  color: #0D9488;
   display: grid;
   place-items: center;
 }

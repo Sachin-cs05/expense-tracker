@@ -186,7 +186,7 @@ aiRouter.post("/categorize", async (request, response) => {
     const categories = await getCategories(request.user.id, "expense");
     const categoryNames = categories.map(c => c.name);
 
-    const result = await suggestCategory(description.trim(), categoryNames);
+    const result = await suggestCategory(description.trim(), categoryNames, request.user.id);
     response.json(result);
   } catch (error) {
     handleAiError(error, response);
